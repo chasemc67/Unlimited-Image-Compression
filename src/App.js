@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import UploaderInput from "./Components/UploaderInput"
+import UploaderOutput from "./Components/UploaderOutput"
 
 export default class App extends Component {
   render() {
@@ -19,8 +21,8 @@ export default class App extends Component {
       		</div>
 
       		<div className="uploaderContainer">
-      			<div className="uploaderInput"></div>
-      			<div className="uploaderOutput"></div>
+      			<UploaderInput />
+      			<UploaderOutput />
       		</div>
      	</div>
     );
