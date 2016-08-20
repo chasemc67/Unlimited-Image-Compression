@@ -14,6 +14,7 @@ export default class App extends Component {
 
 		this.handleInputClick = this.handleInputClick.bind(this);
 		this.handleOutputClick = this.handleOutputClick.bind(this);
+		this.handleTextBoxChange = this.handleTextBoxChange.bind(this);
 		this.state = {
 			outputSource: "#",
 			progress: 0,
@@ -166,6 +167,10 @@ export default class App extends Component {
 		// console.log("Output clicked");
 	}
 
+	handleTextBoxChange(event) {
+		this.setState({pixels: event.target.value});
+	}
+
   	render() {
 		let text = "";
 		if (this.state.progress > 0 || this.state.progress > 98) {
@@ -203,9 +208,8 @@ export default class App extends Component {
 					</div>
 
 					<div className="inputTextBox">
-						<input type="text" name="pixels" onChange={(event) => {
-							this.setState({pixels: event.target.value});
-						}}></input>
+						<input type="text" name="pixels" placeholder="1" onChange={this.handleTextBoxChange}></input>
+						<br />Inverse Weisman Number 
 					</div>
 				</div>
 	     	</div>
