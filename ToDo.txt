@@ -1,8 +1,10 @@
-[ ] Front end image uploader.
+[ ] Front end image uploader. (kyle)
 [ ] Grab that image with javasript
 [ ] Find a library or something to modify image pixels
 [ ] Add slider to select number of pixels for final compressed image
-[ ] Create landing page that explains what the app does
+
+
+[+] Create landing page that explains what the app does
  
 [ ] Create mongoDB
 [ ] Same images
