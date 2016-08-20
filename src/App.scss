@@ -9,8 +9,8 @@ img{
 	text-align: center;
 	.title {
 		font-size: 30px;
-		background-image: url("../assets/img/banana.jpg");
-		
+		background-image: url("../assets/img/star.png");
+		background-size: 100%, auto;
 		color: white;
 		padding-top: 100px;
 		padding-bottom: 100px;
@@ -19,12 +19,14 @@ img{
 		h1 {
 			margin-top: 0;
 			font-family: 'Baloo Paaji', cursive;
+			text-shadow: 1px 1px 2px #000;
 			
 		}
 		p {
 			font-family: 'Roboto', sans-serif;
 			font-weight: 100;
 			font-size: 16px;
+			text-shadow: 1px 1px 2px #000;
 		}
 
 		
