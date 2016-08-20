@@ -43,8 +43,8 @@ export default class App extends Component {
 			
 			const newCanvas = document.createElement('canvas');
 			const newContext = newCanvas.getContext('2d');
-			// newContext.putImageData(this.getPixels(3, 3, this.imageData.width, this.imageData.height), 0, 0);
-			this.finishedInitialImageLoad(); // Once this fires, this.imageData should hold the new imageData
+			this.getPixels(3, 3, this.imageData.width, this.imageData.height);
+			// this.finishedInitialImageLoad(); // Once this fires, this.imageData should hold the new imageData
 			newContext.putImageData(this.imageData, 0, 0);
 
 			this.setState({progress:0})
@@ -56,10 +56,36 @@ export default class App extends Component {
 			setTimeout(() => {
 				this.setState({outputSource: newCanvas.toDataURL("image/png")});
 			}, 3000)
-			
+			this.postImageToServer(this.state.outputSource);
 		};
 		image.src = file;
 		document.body.appendChild(image);
+	}
+
+	postImageToServer(base64Image) {
+		const payload = {
+			image: base64Image
+		};
+		return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:9000/api/images", true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.responseType = "json";
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    typeof xhr.response === "object" ? resolve(xhr.response) : resolve(JSON.parse(xhr.response));
+                } else if (xhr.status === 400) {
+                    reject(xhr.response.message);
+                } else {
+                    reject(`POST request failed with status = ${xhr.status} - ${xhr.statusText}`);
+                }
+            };
+            xhr.onerror = function() {
+                reject(`POST request failed with status = ${xhr.status} - ${xhr.statusText}`);
+            };
+            xhr.send(JSON.stringify(payload));
+        });
+
 	}
 
 	getPixels(numXBlocks, numYBlocks, xsize, ysize) {
@@ -68,16 +94,15 @@ export default class App extends Component {
 		const colorArray = [];
 		for (let y = 0; y < numYBlocks; y++) {
 			for (let x = 0; x < numXBlocks; x++) {
-				const result = this.getAveragePixel(x * blockWidth, y * blockHeight, 
-				Math.min((x + 1) * blockWidth, xsize), Math.min((y + 1) * blockHeight, ysize));
-				
-				colorArray.push(result.red);
-				colorArray.push(result.green);
-				colorArray.push(result.blue);
-				colorArray.push(result.alpha);
+				const startX = x * blockWidth;
+				const startY = y * blockHeight;
+				const endX = Math.min((x + 1) * blockWidth, xsize);
+				const endY = Math.min((y + 1) * blockHeight, ysize);
+				const result = this.getAveragePixel(startX, startY, endX, endY);
+				this.writeValueToImageSpan(startX, startY, endX, endY, result.red, result.green, result.blue, result.alpha);
 			}
 		}
-		return new ImageData(Uint8ClampedArray.from(colorArray), numXBlocks, numYBlocks);
+		// return new ImageData(Uint8ClampedArray.from(colorArray), numXBlocks, numYBlocks);
 	}
 
 	getPixelFromImage(x, y, imageData){
