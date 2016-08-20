@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import UploaderInput from "./Components/UploaderInput"
 import UploaderOutput from "./Components/UploaderOutput"
 import ImageUploader from "./Components/ImageUploader"
-import sumMatrix from "./Util"
 
 export default class App extends Component {
 
@@ -30,6 +29,20 @@ export default class App extends Component {
 		};
 		image.src = file;
 		document.body.appendChild(image);
+	}
+
+	getPixels(numXBlocks, numYBlocks, xsize, ysize) {
+		const blockWidth = Math.ceil(xsize / numXBlocks);
+		const blockHeight = Math.ceil(width / numYBlocks);
+		const results = [];
+		for (let y = 0; y < numYBlocks; y++) {
+			for (let x = 0; x < numXBlocks; x++) {
+				const result = this.getAveragePixel(x * blockWidth, Math.min((x + 1) * blockWidth, xsize),
+				 y * blockHeight, Math.min((y + 1) * blockHeight, ysize));
+				results.push(result);
+			}
+		}
+		return results;
 	}
 
 	getPixelFromImage(x, y, imageData){
