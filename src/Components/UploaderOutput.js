@@ -12,7 +12,7 @@ export default class UploaderOutput extends Component {
 				Upload Output
 				{img}
 			</div>
-		); 
+		);
 	}
 }
 
