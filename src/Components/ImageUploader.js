@@ -26,6 +26,7 @@ export default class ImageUploader extends Component {
     return (
     	<div>
           <div className="uploaderInput" onClick={this.handleClick}>
+            Upload Image
             <img src={this.state.image}/>
           </div>
       		<input className="hidden-input" type="file" ref="_file" onChange={this.handleFileChange}/>
