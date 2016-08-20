@@ -7,6 +7,8 @@ export default class App extends Component {
 
 	constructor(props) {
 		super(props);
+		this.imageData = null;
+
 		this.handleInputClick = this.handleInputClick.bind(this);
 		this.handleOutputClick = this.handleOutputClick.bind(this);
 	}
@@ -15,7 +17,7 @@ export default class App extends Component {
 		console.log("input clicked");
 		console.log("file",  file);
 		const image = new Image();
-		image.onload = function () {
+		image.onload = () => {
 			const canvas = document.createElement('canvas');
 			canvas.width = image.width;
 			canvas.height = image.height;
@@ -23,20 +25,24 @@ export default class App extends Component {
 			const context = canvas.getContext('2d');
 			context.drawImage(image, 0, 0);
 
-			const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-			console.log("called", imageData);
-			// Now you can access pixel data from imageData.data.
-			// It's a one-dimensional array of RGBA values.
-			// Here's an example of how to get a pixel's color at (x,y)
-			const index = (y * imageData.width + x) * 4;
-			const red = imageData.data[index];
-			const green = imageData.data[index + 1];
-			const blue = imageData.data[index + 2];
-			const alpha = imageData.data[index + 3];
-			console.log(red, green, blue, alpha);
+			this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+			this.getPixelFromImage(0, 0, this.imageData);
 		};
 		image.src = file;
 		document.body.appendChild(image);
+	}
+
+	getPixelFromImage(x, y, imageData){
+		const index = (y * imageData.width + x) * 4;
+		const pixel = {
+			red: imageData.data[index],
+			green: imageData.data[index + 1],
+			blue: imageData.data[index + 2],
+			alpha: imageData.data[index + 3]
+		};
+
+		console.log(`Pixel at: ${x},${y}: ${JSON.stringify(pixel)}`);
+		return pixel
 	}
 
 	handleOutputClick() {
