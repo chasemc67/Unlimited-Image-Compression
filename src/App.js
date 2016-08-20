@@ -14,8 +14,8 @@ export default class App extends Component {
 	}
 
 	handleInputClick(file) {
-		console.log("input clicked");
-		console.log("file",  file);
+		// console.log("input clicked");
+		// console.log("file",  file);
 		const image = new Image();
 		image.onload = () => {
 			const canvas = document.createElement('canvas');
@@ -26,7 +26,7 @@ export default class App extends Component {
 			context.drawImage(image, 0, 0);
 
 			this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-			this.getPixelFromImage(0, 0, this.imageData);
+			this.finishedInitialImageLoad();
 		};
 		image.src = file;
 		document.body.appendChild(image);
@@ -41,12 +41,55 @@ export default class App extends Component {
 			alpha: imageData.data[index + 3]
 		};
 
-		console.log(`Pixel at: ${x},${y}: ${JSON.stringify(pixel)}`);
+		// console.log(`Pixel at: ${x},${y}: ${JSON.stringify(pixel)}`);
 		return pixel
 	}
 
+	finishedInitialImageLoad() {
+		console.log("Average pixel is: ");
+		console.log(JSON.stringify(this.getAveragePixel(0, 0, 5, 1)));
+		// this.getPixelFromImage(0, 0, this.imageData);
+	}
+
+	testOutput() {
+		console.log(`red: ${this.getPixelFromImage(0, 0, this.imageData).red}`);
+		console.log(`red: ${this.getPixelFromImage(1, 0, this.imageData).red}`);
+		console.log(`red: ${this.getPixelFromImage(2, 0, this.imageData).red}`);
+		console.log(`red: ${this.getPixelFromImage(3, 0, this.imageData).red}`);
+		console.log(`red: ${this.getPixelFromImage(4, 0, this.imageData).red}`);
+	}
+
+	getAveragePixel(start_x, start_y, end_x, end_y) {
+		// this.testOutput();
+		let pixelCount = 0;
+		let averagePixel = {
+			red: 0,
+			green: 0,
+			blue: 0,
+			alpha: 0
+		};	
+
+		for (var i = start_y; i < end_y; i++){
+			for (var j = start_x; j < end_x-1; j++)
+				pixelCount += 1;
+				var pixel = this.getPixelFromImage(j, i, this.imageData);
+				console.log(`Got pixel at ${i},${j}: ${JSON.stringify(pixel)}`);
+				averagePixel.red += pixel.red;
+				averagePixel.green += pixel.green;
+				averagePixel.blue += pixel.blue;
+				averagePixel.alpha += pixel.alpha;
+		}
+
+		averagePixel.red = averagePixel.red / pixelCount;
+		averagePixel.green = averagePixel.green / pixelCount;
+		averagePixel.blue = averagePixel.blue / pixelCount;
+		averagePixel.alpha = averagePixel.alpha / pixelCount;
+
+		return averagePixel;
+	}
+
 	handleOutputClick() {
-		console.log("Output clicked");
+		// console.log("Output clicked");
 	}
 
   	render() {
