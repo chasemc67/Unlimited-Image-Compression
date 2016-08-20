@@ -4,8 +4,12 @@ export default class UploaderOutput extends Component {
 
 	render() {
 		return (
-			<div className="uploaderOutput">
+			<div className="uploaderOutput" onClick={this.props.onClick}>
 			</div>
 		); 
 	}
 }
+
+UploaderOutput.propTypes = {
+	onClick: React.PropTypes.func
+};
