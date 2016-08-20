@@ -6,8 +6,8 @@ export default class UploaderOutput extends Component {
 		console.log(this.props);
 		return (
 			<div className="uploaderOutput" onClick={this.props.onClick}>
-				<img src={this.props.source} />
 				Upload Output
+				<img src={this.props.source} />
 			</div>
 		); 
 	}
