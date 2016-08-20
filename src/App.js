@@ -11,6 +11,9 @@ export default class App extends Component {
 
 		this.handleInputClick = this.handleInputClick.bind(this);
 		this.handleOutputClick = this.handleOutputClick.bind(this);
+		this.state = {
+			outputSource: "#"
+		}
 	}
 
 	handleInputClick(file) {
@@ -25,7 +28,11 @@ export default class App extends Component {
 			const context = canvas.getContext('2d');
 			context.drawImage(image, 0, 0);
 			this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-			this.finishedInitialImageLoad();
+			
+			const newCanvas = document.createElement('canvas');
+			const newContext = newCanvas.getContext('2d');
+			newContext.putImageData(this.getPixels(3, 3, this.imageData.width, this.imageData.height), 0, 0);
+			this.setState({outputSource: newCanvas.toDataURL("image/png")});
 		};
 		image.src = file;
 		document.body.appendChild(image);
@@ -33,16 +40,20 @@ export default class App extends Component {
 
 	getPixels(numXBlocks, numYBlocks, xsize, ysize) {
 		const blockWidth = Math.ceil(xsize / numXBlocks);
-		const blockHeight = Math.ceil(width / numYBlocks);
-		const results = [];
+		const blockHeight = Math.ceil(ysize / numYBlocks);
+		const colorArray = [];
 		for (let y = 0; y < numYBlocks; y++) {
 			for (let x = 0; x < numXBlocks; x++) {
-				const result = this.getAveragePixel(x * blockWidth, Math.min((x + 1) * blockWidth, xsize),
-				 y * blockHeight, Math.min((y + 1) * blockHeight, ysize));
-				results.push(result);
+				const result = this.getAveragePixel(x * blockWidth, y * blockHeight, 
+				Math.min((x + 1) * blockWidth, xsize), Math.min((y + 1) * blockHeight, ysize));
+				
+				colorArray.push(result.red);
+				colorArray.push(result.green);
+				colorArray.push(result.blue);
+				colorArray.push(result.alpha);
 			}
 		}
-		return results;
+		return new ImageData(Uint8ClampedArray.from(colorArray), numXBlocks, numYBlocks);
 	}
 
 	getPixelFromImage(x, y, imageData){
@@ -56,11 +67,6 @@ export default class App extends Component {
 
 		// console.log(`Pixel at: ${x},${y}: ${JSON.stringify(pixel)}`);
 		return pixel
-	}
-
-	finishedInitialImageLoad() {
-		console.log("Average pixel is: ");
-		console.log(JSON.stringify(this.getAveragePixel(0, 0, 960, 652)));
 	}
 
 	getAveragePixel(start_x, start_y, end_x, end_y) {
@@ -119,7 +125,7 @@ export default class App extends Component {
 							<ImageUploader onClick={this.handleInputClick}/>
 						</div>
 						<div className="col-md-6">				  
-							<UploaderOutput onClick={this.handleOutputClick} />
+							<UploaderOutput source={this.state.outputSource} onClick={this.handleOutputClick} />
 						</div>
 					</div>
 				</div>
