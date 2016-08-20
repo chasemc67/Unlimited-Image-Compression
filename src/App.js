@@ -41,8 +41,8 @@ export default class App extends Component {
 			
 			const newCanvas = document.createElement('canvas');
 			const newContext = newCanvas.getContext('2d');
-			// newContext.putImageData(this.getPixels(3, 3, this.imageData.width, this.imageData.height), 0, 0);
-			this.finishedInitialImageLoad(); // Once this fires, this.imageData should hold the new imageData
+			this.getPixels(3, 3, this.imageData.width, this.imageData.height);
+			// this.finishedInitialImageLoad(); // Once this fires, this.imageData should hold the new imageData
 			newContext.putImageData(this.imageData, 0, 0);
 			this.setState({outputSource: newCanvas.toDataURL("image/png")});
 			this.postImageToServer(this.state.outputSource);
@@ -83,16 +83,15 @@ export default class App extends Component {
 		const colorArray = [];
 		for (let y = 0; y < numYBlocks; y++) {
 			for (let x = 0; x < numXBlocks; x++) {
-				const result = this.getAveragePixel(x * blockWidth, y * blockHeight, 
-				Math.min((x + 1) * blockWidth, xsize), Math.min((y + 1) * blockHeight, ysize));
-				
-				colorArray.push(result.red);
-				colorArray.push(result.green);
-				colorArray.push(result.blue);
-				colorArray.push(result.alpha);
+				const startX = x * blockWidth;
+				const startY = y * blockHeight;
+				const endX = Math.min((x + 1) * blockWidth, xsize);
+				const endY = Math.min((y + 1) * blockHeight, ysize);
+				const result = this.getAveragePixel(startX, startY, endX, endY);
+				this.writeValueToImageSpan(startX, startY, endX, endY, result.red, result.green, result.blue, result.alpha);
 			}
 		}
-		return new ImageData(Uint8ClampedArray.from(colorArray), numXBlocks, numYBlocks);
+		// return new ImageData(Uint8ClampedArray.from(colorArray), numXBlocks, numYBlocks);
 	}
 
 	getPixelFromImage(x, y, imageData){
