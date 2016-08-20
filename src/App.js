@@ -11,8 +11,32 @@ export default class App extends Component {
 		this.handleOutputClick = this.handleOutputClick.bind(this);
 	}
 
-	handleInputClick() {
+	handleInputClick(file) {
 		console.log("input clicked");
+		console.log("file",  file);
+		const image = new Image();
+		image.onload = function () {
+			const canvas = document.createElement('canvas');
+			canvas.width = image.width;
+			canvas.height = image.height;
+
+			const context = canvas.getContext('2d');
+			context.drawImage(image, 0, 0);
+
+			const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+			console.log("called", imageData);
+			// Now you can access pixel data from imageData.data.
+			// It's a one-dimensional array of RGBA values.
+			// Here's an example of how to get a pixel's color at (x,y)
+			const index = (y * imageData.width + x) * 4;
+			const red = imageData.data[index];
+			const green = imageData.data[index + 1];
+			const blue = imageData.data[index + 2];
+			const alpha = imageData.data[index + 3];
+			console.log(red, green, blue, alpha);
+		};
+		image.src = file;
+		document.body.appendChild(image);
 	}
 
 	handleOutputClick() {

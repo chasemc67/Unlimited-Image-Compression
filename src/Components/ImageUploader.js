@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 export default class ImageUploader extends Component {
   constructor() {
@@ -13,13 +13,13 @@ export default class ImageUploader extends Component {
     const reader = new FileReader();
     reader.onloadend = () => {
       this.setState({image: reader.result});
+      this.props.onClick(this.state.image);
     }
     reader.readAsDataURL(file);
   }
 
   handleClick = () => {
     this.refs._file.click();
-    this.props.onClick(this.state.image);
   }
 
   render() {
