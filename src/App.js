@@ -8,9 +8,16 @@ export default class App extends Component {
 	constructor(props) {
 		super(props);
 		this.imageData = null;
+		this.imageWidth = null;
+		this.imageHeight = null;
 
 		this.handleInputClick = this.handleInputClick.bind(this);
 		this.handleOutputClick = this.handleOutputClick.bind(this);
+	}
+
+	getSinglePixelImage() {
+		return this.getAveragePixel(0, 0, this.imageWidth, this.imageHeight);	
+		
 	}
 
 	handleInputClick(file) {
@@ -21,6 +28,9 @@ export default class App extends Component {
 			const canvas = document.createElement('canvas');
 			canvas.width = image.width;
 			canvas.height = image.height;
+
+			this.imageWidth = canvas.width;
+			this.imageHeight = canvas.height;
 
 			const context = canvas.getContext('2d');
 			context.drawImage(image, 0, 0);
@@ -58,9 +68,36 @@ export default class App extends Component {
 		return pixel
 	}
 
+	// Write an individual rgba pixel to an x,y coord in imageData
+	writePixelToImageImage(x, y, imageData, r, g, b, a){
+		const index = (y * imageData.width + x) * 4;
+		imageData.data[index] = r;
+		imageData.data[index + 1] = g;
+ 		imageData.data[index + 2] = b;
+ 		imageData.data[index + 3] = a;
+	}
+
+	// Write an rgba pixel to some span in imageData
+	writeValueToImageSpan(start_x, start_y, end_x, end_y, r, g, b, a) {
+		for (var m = start_y; m < end_y; m++){
+			for (var n = start_x; n < end_x; n++) {
+				this.writePixelToImageImage(n, m, this.imageData, r, g, b, a);
+			}
+		}
+	}
+
 	finishedInitialImageLoad() {
-		console.log("Average pixel is: ");
-		console.log(JSON.stringify(this.getAveragePixel(0, 0, 960, 652)));
+		var rgbImage = this.getSinglePixelImage();
+		this.convertSingleRGBToImage(rgbImage);
+	}
+
+	convertSingleRGBToImage(image) {
+		console.log(`Converting Image ${JSON.stringify(image)}`);
+		this.writeValueToImageSpan(0, 0, this.imageWidth, this.imageHeight, image.red, image.green, image.blue, image.alpha);
+
+		
+		// Ok, so now this.imageData is all our new pixel. so i need to write that to a canvas, so i can get it in base64.
+
 	}
 
 	getAveragePixel(start_x, start_y, end_x, end_y) {
