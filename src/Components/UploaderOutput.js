@@ -9,10 +9,15 @@ export default class UploaderOutput extends Component {
 		}
 		return (
 			<div className="uploaderOutput" onClick={this.props.onClick}>
+			<div className="row">
 				Upload Output
+				</div>
+			<div className="row">
+				
 				{img}
+				</div>
 			</div>
-		); 
+		);
 	}
 }
 

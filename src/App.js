@@ -173,8 +173,11 @@ export default class App extends Component {
 
   	render() {
 		let text = "";
-		if (this.state.progress > 0 || this.state.progress > 98) {
+		if (this.state.progress > 0 && this.state.progress < 98) {
 			text = "Compressing ..."
+		}
+		if (this.state.progress === 100){
+			text = "Successfully Compressed!";
 		}
 	    return (
 	    	<div className="root">
