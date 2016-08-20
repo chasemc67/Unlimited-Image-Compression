@@ -1,4 +1,11 @@
+img{
+	opacity: 0;
+}
+
 .root {
+	img {
+		opacity: 1;
+	}
 	text-align: center;
 	.title {
 		font-size: 30px;
@@ -67,7 +74,12 @@
 			border-style: dashed;
 			border-color: #666;
 			border-width: 5px;
-			border-radius: 10px;						
+			border-radius: 10px;	
+
+			img {
+				max-height: 60px;
+				border-radius: 10px;	
+			}							
 		}
 
 		.hidden-input {
