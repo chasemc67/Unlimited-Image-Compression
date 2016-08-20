@@ -20,11 +20,6 @@ export default class App extends Component {
 		}
 	}
 
-	getSinglePixelImage() {
-		return this.getAveragePixel(0, 0, this.imageWidth, this.imageHeight);	
-		
-	}
-
 	handleInputClick(file) {
 		// console.log("input clicked");
 		// console.log("file",  file);
@@ -42,8 +37,10 @@ export default class App extends Component {
 			this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 			
 			const newCanvas = document.createElement('canvas');
+			newCanvas.width = image.width;
+			newCanvas.height = image.height;
 			const newContext = newCanvas.getContext('2d');
-			this.getPixels(3, 3, this.imageData.width, this.imageData.height);
+			this.getPixels(3, 3, canvas.width, canvas.height);
 			// this.finishedInitialImageLoad(); // Once this fires, this.imageData should hold the new imageData
 			newContext.putImageData(this.imageData, 0, 0);
 
@@ -134,20 +131,6 @@ export default class App extends Component {
 				this.writePixelToImageImage(n, m, this.imageData, r, g, b, a);
 			}
 		}
-	}
-
-	finishedInitialImageLoad() {
-		var rgbImage = this.getSinglePixelImage();
-		this.convertSingleRGBToImage(rgbImage);
-	}
-
-	convertSingleRGBToImage(image) {
-		console.log(`Converting Image ${JSON.stringify(image)}`);
-		this.writeValueToImageSpan(0, 0, this.imageWidth, this.imageHeight, image.red, image.green, image.blue, image.alpha);
-
-		
-		// Ok, so now this.imageData is all our new pixel. so i need to write that to a canvas, so i can get it in base64.
-
 	}
 
 	getAveragePixel(start_x, start_y, end_x, end_y) {
