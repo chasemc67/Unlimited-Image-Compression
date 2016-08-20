@@ -7,5 +7,5 @@
 [+] Create landing page that explains what the app does
  
 [ ] Create mongoDB
-[ ] Same images
+[ ] Save images
 [ ] Show in gallery

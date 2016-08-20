@@ -28,7 +28,7 @@ export default class App extends Component {
 
 	      		<div className="about">
 	      			<b>Quickly</b> and <b>securely</b> compress <b id="emphasize">GIGABYTES</b> of photos down to bytes or less. <br />
-	      			With our revolutionary one-way compression algorithms, you get state of the art security while keeping disk space to an absolute minimum. <br />
+	      			With our revolutionary one-way compression technology, you get state of the art security while using minimal disk space. <br />
 	      			Safely share pictures with your friends, without worying about state sponsored hackers or foreign nationalists.
 	      			<br />
 	      			<br />
