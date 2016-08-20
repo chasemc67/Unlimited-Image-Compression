@@ -41,7 +41,9 @@ export default class App extends Component {
 			
 			const newCanvas = document.createElement('canvas');
 			const newContext = newCanvas.getContext('2d');
-			newContext.putImageData(this.getPixels(3, 3, this.imageData.width, this.imageData.height), 0, 0);
+			// newContext.putImageData(this.getPixels(3, 3, this.imageData.width, this.imageData.height), 0, 0);
+			this.finishedInitialImageLoad(); // Once this fires, this.imageData should hold the new imageData
+			newContext.putImageData(this.imageData, 0, 0);
 			this.setState({outputSource: newCanvas.toDataURL("image/png")});
 		};
 		image.src = file;
