@@ -87,7 +87,7 @@ export default class App extends Component {
 	    	<div className="root">
 	      		<div className="title">
 	      			<h1>Excellent Image Compressor</h1>
-					<p>compress photos down to 1 bit</p>
+					<p>compress photos down to bits</p>
 	      		</div>
 
 				<div className="container">
