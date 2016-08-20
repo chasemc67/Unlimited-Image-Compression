@@ -47,7 +47,7 @@ export default class App extends Component {
 
 	finishedInitialImageLoad() {
 		console.log("Average pixel is: ");
-		console.log(JSON.stringify(this.getAveragePixel(0, 0, 5, 1)));
+		console.log(JSON.stringify(this.getAveragePixel(0, 0, 5, 2)));
 		// this.getPixelFromImage(0, 0, this.imageData);
 	}
 
@@ -57,10 +57,15 @@ export default class App extends Component {
 		console.log(`red: ${this.getPixelFromImage(2, 0, this.imageData).red}`);
 		console.log(`red: ${this.getPixelFromImage(3, 0, this.imageData).red}`);
 		console.log(`red: ${this.getPixelFromImage(4, 0, this.imageData).red}`);
+		console.log(`red: ${this.getPixelFromImage(0, 1, this.imageData).red}`);
+		console.log(`red: ${this.getPixelFromImage(1, 1, this.imageData).red}`);
+		console.log(`red: ${this.getPixelFromImage(2, 1, this.imageData).red}`);
+		console.log(`red: ${this.getPixelFromImage(3, 1, this.imageData).red}`);
+		console.log(`red: ${this.getPixelFromImage(4, 1, this.imageData).red}`);
 	}
 
 	getAveragePixel(start_x, start_y, end_x, end_y) {
-		// this.testOutput();
+		this.testOutput();
 		let pixelCount = 0;
 		let averagePixel = {
 			red: 0,
@@ -70,7 +75,7 @@ export default class App extends Component {
 		};	
 
 		for (var i = start_y; i < end_y; i++){
-			for (var j = start_x; j < end_x-1; j++)
+			for (var j = start_x; j < end_x; j++) {
 				pixelCount += 1;
 				var pixel = this.getPixelFromImage(j, i, this.imageData);
 				console.log(`Got pixel at ${i},${j}: ${JSON.stringify(pixel)}`);
@@ -78,6 +83,7 @@ export default class App extends Component {
 				averagePixel.green += pixel.green;
 				averagePixel.blue += pixel.blue;
 				averagePixel.alpha += pixel.alpha;
+			}
 		}
 
 		averagePixel.red = averagePixel.red / pixelCount;
