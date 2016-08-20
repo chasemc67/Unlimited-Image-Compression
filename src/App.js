@@ -37,10 +37,9 @@ export default class App extends Component {
 	      		</div>
 
 	      		<div className="uploaderContainer">
-	      			<UploaderInput onClick={this.handleInputClick} />
+	      			<ImageUploader onClick={this.handleInputClick}/>
 	      			<UploaderOutput onClick={this.handleOutputClick} />
 	      		</div>
-						<ImageUploader/>
 	     	</div>
 	    );
 	}

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {Image} from 'react-bootstrap';
 
 export default class ImageUploader extends Component {
   constructor() {
@@ -9,24 +8,32 @@ export default class ImageUploader extends Component {
     };
   }
 
-  handleFileChange = (event) => {
+  handleFileChange = () => {
     const file = this.refs._file.files[0];
     const reader = new FileReader();
     reader.onloadend = () => {
-      console.log(reader.result);
       this.setState({image: reader.result});
     }
     reader.readAsDataURL(file);
   }
 
+  handleClick = () => {
+    this.refs._file.click();
+    this.props.onClick(this.state.image);
+  }
+
   render() {
     return (
-    	<div className="root">
-        <form encType="multipart/form-data" action="/upload/image" method="post">
-      		  <input type="file" ref="_file" onChange={this.handleFileChange}/>
-          </form>
-          <Image src={this.state.image}/>
+    	<div>
+          <div className="uploaderInput" onClick={this.handleClick}>
+            <img src={this.state.image}/>
+          </div>
+      		<input className="hidden-input" type="file" ref="_file" onChange={this.handleFileChange}/>
       	</div>
     );
   }
 }
+
+ImageUploader.propTypes = {
+	onClick: React.PropTypes.func
+};
