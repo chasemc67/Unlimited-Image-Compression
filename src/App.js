@@ -200,6 +200,12 @@ export default class App extends Component {
 							<UploaderOutput source={this.state.outputSource} onClick={this.handleOutputClick} />
 						</div>
 					</div>
+
+					<div className="inputTextBox">
+						<input type="text" name="pixels" onChange={function (event) {
+							this.setState({pixels: event.target.value});
+						}}></input>
+					</div>
 				</div>
 	     	</div>
 	    );
