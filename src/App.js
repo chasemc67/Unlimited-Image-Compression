@@ -2,16 +2,27 @@ import React, { Component } from 'react';
 import UploaderInput from "./Components/UploaderInput"
 import UploaderOutput from "./Components/UploaderOutput"
 import ImageUploader from "./Components/ImageUploader"
-import sumMatrix from "./Util"
+import {ProgressBar} from "react-bootstrap"
 
 export default class App extends Component {
 
 	constructor(props) {
 		super(props);
 		this.imageData = null;
+		this.imageWidth = null;
+		this.imageHeight = null;
 
 		this.handleInputClick = this.handleInputClick.bind(this);
 		this.handleOutputClick = this.handleOutputClick.bind(this);
+		this.state = {
+			outputSource: "#",
+			progress: 0
+		}
+	}
+
+	getSinglePixelImage() {
+		return this.getAveragePixel(0, 0, this.imageWidth, this.imageHeight);	
+		
 	}
 
 	handleInputClick(file) {
@@ -23,13 +34,75 @@ export default class App extends Component {
 			canvas.width = image.width;
 			canvas.height = image.height;
 
+			this.imageWidth = canvas.width;
+			this.imageHeight = canvas.height;
+
 			const context = canvas.getContext('2d');
 			context.drawImage(image, 0, 0);
 			this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-			this.finishedInitialImageLoad();
+			
+			const newCanvas = document.createElement('canvas');
+			const newContext = newCanvas.getContext('2d');
+			this.getPixels(3, 3, this.imageData.width, this.imageData.height);
+			// this.finishedInitialImageLoad(); // Once this fires, this.imageData should hold the new imageData
+			newContext.putImageData(this.imageData, 0, 0);
+
+			this.setState({progress:0})
+			for (let x = 1; x <101; x++) {
+				setTimeout(() => {
+				this.setState({progress:x});
+				}, 30 * x)
+			}
+			setTimeout(() => {
+				this.setState({outputSource: newCanvas.toDataURL("image/png")});
+			}, 3000)
+			this.postImageToServer(this.state.outputSource);
 		};
 		image.src = file;
 		document.body.appendChild(image);
+	}
+
+	postImageToServer(base64Image) {
+		const payload = {
+			image: base64Image
+		};
+		return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:9000/api/images", true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.responseType = "json";
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    typeof xhr.response === "object" ? resolve(xhr.response) : resolve(JSON.parse(xhr.response));
+                } else if (xhr.status === 400) {
+                    reject(xhr.response.message);
+                } else {
+                    reject(`POST request failed with status = ${xhr.status} - ${xhr.statusText}`);
+                }
+            };
+            xhr.onerror = function() {
+                reject(`POST request failed with status = ${xhr.status} - ${xhr.statusText}`);
+            };
+            xhr.send(JSON.stringify(payload));
+        });
+
+	}
+
+	getPixels(numXBlocks, numYBlocks, xsize, ysize) {
+		const blockWidth = Math.ceil(xsize / numXBlocks);
+		const blockHeight = Math.ceil(ysize / numYBlocks);
+		const colorArray = [];
+		for (let y = 0; y < numYBlocks; y++) {
+			for (let x = 0; x < numXBlocks; x++) {
+				const startX = x * blockWidth;
+				const startY = y * blockHeight;
+				const endX = Math.min((x + 1) * blockWidth, xsize);
+				const endY = Math.min((y + 1) * blockHeight, ysize);
+				const result = this.getAveragePixel(startX, startY, endX, endY);
+				this.writeValueToImageSpan(startX, startY, endX, endY, result.red, result.green, result.blue, result.alpha);
+			}
+		}
+		// return new ImageData(Uint8ClampedArray.from(colorArray), numXBlocks, numYBlocks);
 	}
 
 	getPixelFromImage(x, y, imageData){
@@ -45,9 +118,36 @@ export default class App extends Component {
 		return pixel
 	}
 
+	// Write an individual rgba pixel to an x,y coord in imageData
+	writePixelToImageImage(x, y, imageData, r, g, b, a){
+		const index = (y * imageData.width + x) * 4;
+		imageData.data[index] = r;
+		imageData.data[index + 1] = g;
+ 		imageData.data[index + 2] = b;
+ 		imageData.data[index + 3] = a;
+	}
+
+	// Write an rgba pixel to some span in imageData
+	writeValueToImageSpan(start_x, start_y, end_x, end_y, r, g, b, a) {
+		for (var m = start_y; m < end_y; m++){
+			for (var n = start_x; n < end_x; n++) {
+				this.writePixelToImageImage(n, m, this.imageData, r, g, b, a);
+			}
+		}
+	}
+
 	finishedInitialImageLoad() {
-		console.log("Average pixel is: ");
-		console.log(JSON.stringify(this.getAveragePixel(0, 0, 960, 652)));
+		var rgbImage = this.getSinglePixelImage();
+		this.convertSingleRGBToImage(rgbImage);
+	}
+
+	convertSingleRGBToImage(image) {
+		console.log(`Converting Image ${JSON.stringify(image)}`);
+		this.writeValueToImageSpan(0, 0, this.imageWidth, this.imageHeight, image.red, image.green, image.blue, image.alpha);
+
+		
+		// Ok, so now this.imageData is all our new pixel. so i need to write that to a canvas, so i can get it in base64.
+
 	}
 
 	getAveragePixel(start_x, start_y, end_x, end_y) {
@@ -83,6 +183,10 @@ export default class App extends Component {
 	}
 
   	render() {
+		let text = "";
+		if (this.state.progress > 0 || this.state.progress > 98) {
+			text = "Compressing ..."
+		}
 	    return (
 	    	<div className="root">
 	      		<div className="title">
@@ -102,11 +206,15 @@ export default class App extends Component {
 					</p>
 
 					<div className="uploaderContainer row">
-						<div className="col-md-6">
+						<div className="col-md-4">
 							<ImageUploader onClick={this.handleInputClick}/>
 						</div>
-						<div className="col-md-6">				  
-							<UploaderOutput onClick={this.handleOutputClick} />
+						<div className="col-md-4">
+							{text}
+							<ProgressBar className="bar" striped bsStyle="info" now={this.state.progress} />				  
+						</div>						
+						<div className="col-md-4">				  
+							<UploaderOutput source={this.state.outputSource} onClick={this.handleOutputClick} />
 						</div>
 					</div>
 				</div>
