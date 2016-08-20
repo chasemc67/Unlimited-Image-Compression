@@ -16,7 +16,8 @@ export default class App extends Component {
 		this.handleOutputClick = this.handleOutputClick.bind(this);
 		this.state = {
 			outputSource: "#",
-			progress: 0
+			progress: 0,
+			pixels: 1
 		}
 	}
 
@@ -40,7 +41,7 @@ export default class App extends Component {
 			newCanvas.width = image.width;
 			newCanvas.height = image.height;
 			const newContext = newCanvas.getContext('2d');
-			this.getPixels(3, 3, canvas.width, canvas.height);
+			this.getPixels(this.state.pixels, this.state.pixels, canvas.width, canvas.height);
 			// this.finishedInitialImageLoad(); // Once this fires, this.imageData should hold the new imageData
 			newContext.putImageData(this.imageData, 0, 0);
 
@@ -202,7 +203,7 @@ export default class App extends Component {
 					</div>
 
 					<div className="inputTextBox">
-						<input type="text" name="pixels" onChange={function (event) {
+						<input type="text" name="pixels" onChange={(event) => {
 							this.setState({pixels: event.target.value});
 						}}></input>
 					</div>
