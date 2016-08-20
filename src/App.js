@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import UploaderInput from "./Components/UploaderInput"
 import UploaderOutput from "./Components/UploaderOutput"
-import ImageUploader from "./ImageUploader"
+import ImageUploader from "./Components/ImageUploader"
 
 export default class App extends Component {
 
