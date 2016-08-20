@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import UploaderInput from "./Components/UploaderInput"
 import UploaderOutput from "./Components/UploaderOutput"
 import ImageUploader from "./Components/ImageUploader"
+import sumMatrix from "./Util"
 
 export default class App extends Component {
 
@@ -25,8 +26,20 @@ export default class App extends Component {
 			const context = canvas.getContext('2d');
 			context.drawImage(image, 0, 0);
 
-			this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-			this.getPixelFromImage(0, 0, this.imageData);
+			const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+			console.log("called", imageData);
+			// Now you can access pixel data from imageData.data.
+			// It's a one-dimensional array of RGBA values.
+			// Here's an example of how to get a pixel's color at (x,y)
+			const result = sumMatrix(imageData.data, imageData.width, imageData.height, 3, 3)
+			console.log(result);
+
+			// const index = (y * imageData.width + x) * 4;
+			// const red = imageData.data[index];
+			// const green = imageData.data[index + 1];
+			// const blue = imageData.data[index + 2];
+			// const alpha = imageData.data[index + 3];
+			// console.log(red, green, blue, alpha);
 		};
 		image.src = file;
 		document.body.appendChild(image);
