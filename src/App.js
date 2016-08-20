@@ -45,9 +45,36 @@ export default class App extends Component {
 			this.finishedInitialImageLoad(); // Once this fires, this.imageData should hold the new imageData
 			newContext.putImageData(this.imageData, 0, 0);
 			this.setState({outputSource: newCanvas.toDataURL("image/png")});
+			this.postImageToServer(this.state.outputSource);
 		};
 		image.src = file;
 		document.body.appendChild(image);
+	}
+
+	postImageToServer(base64Image) {
+		const payload = {
+			image: base64Image
+		};
+		return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:9000/api/images", true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.responseType = "json";
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    typeof xhr.response === "object" ? resolve(xhr.response) : resolve(JSON.parse(xhr.response));
+                } else if (xhr.status === 400) {
+                    reject(xhr.response.message);
+                } else {
+                    reject(`POST request failed with status = ${xhr.status} - ${xhr.statusText}`);
+                }
+            };
+            xhr.onerror = function() {
+                reject(`POST request failed with status = ${xhr.status} - ${xhr.statusText}`);
+            };
+            xhr.send(JSON.stringify(payload));
+        });
+
 	}
 
 	getPixels(numXBlocks, numYBlocks, xsize, ysize) {
