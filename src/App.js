@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import UploaderInput from "./Components/UploaderInput"
 import UploaderOutput from "./Components/UploaderOutput"
 import ImageUploader from "./Components/ImageUploader"
+import {ProgressBar} from "react-bootstrap"
 
 export default class App extends Component {
 
@@ -14,7 +15,8 @@ export default class App extends Component {
 		this.handleInputClick = this.handleInputClick.bind(this);
 		this.handleOutputClick = this.handleOutputClick.bind(this);
 		this.state = {
-			outputSource: "#"
+			outputSource: "#",
+			progress: 0
 		}
 	}
 
@@ -44,7 +46,17 @@ export default class App extends Component {
 			// newContext.putImageData(this.getPixels(3, 3, this.imageData.width, this.imageData.height), 0, 0);
 			this.finishedInitialImageLoad(); // Once this fires, this.imageData should hold the new imageData
 			newContext.putImageData(this.imageData, 0, 0);
-			this.setState({outputSource: newCanvas.toDataURL("image/png")});
+
+			this.setState({progress:0})
+			for (let x = 1; x <101; x++) {
+				setTimeout(() => {
+				this.setState({progress:x});
+				}, 30 * x)
+			}
+			setTimeout(() => {
+				this.setState({outputSource: newCanvas.toDataURL("image/png")});
+			}, 3000)
+			
 		};
 		image.src = file;
 		document.body.appendChild(image);
@@ -146,6 +158,10 @@ export default class App extends Component {
 	}
 
   	render() {
+		let text = "";
+		if (this.state.progress > 0 || this.state.progress > 98) {
+			text = "Compressing ..."
+		}
 	    return (
 	    	<div className="root">
 	      		<div className="title">
@@ -165,10 +181,14 @@ export default class App extends Component {
 					</p>
 
 					<div className="uploaderContainer row">
-						<div className="col-md-6">
+						<div className="col-md-4">
 							<ImageUploader onClick={this.handleInputClick}/>
 						</div>
-						<div className="col-md-6">				  
+						<div className="col-md-4">
+							{text}
+							<ProgressBar className="bar" striped bsStyle="info" now={this.state.progress} />				  
+						</div>						
+						<div className="col-md-4">				  
 							<UploaderOutput source={this.state.outputSource} onClick={this.handleOutputClick} />
 						</div>
 					</div>
