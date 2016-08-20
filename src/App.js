@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import UploaderInput from "./Components/UploaderInput"
 import UploaderOutput from "./Components/UploaderOutput"
+import ImageUploader from "./ImageUploader"
 
 export default class App extends Component {
 
@@ -39,6 +40,7 @@ export default class App extends Component {
 	      			<UploaderInput onClick={this.handleInputClick} />
 	      			<UploaderOutput onClick={this.handleOutputClick} />
 	      		</div>
+						<ImageUploader/>
 	     	</div>
 	    );
 	}
