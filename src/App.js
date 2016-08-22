@@ -12,14 +12,16 @@ export default class App extends Component {
 		this.imageWidth = null;
 		this.imageHeight = null;
 
-		this.handleInputClick = this.handleInputClick.bind(this);
-		this.handleOutputClick = this.handleOutputClick.bind(this);
-		this.handleTextBoxChange = this.handleTextBoxChange.bind(this);
 		this.state = {
 			outputSource: "#",
 			progress: 0,
 			pixels: 1
 		}
+
+		this.handleInputClick = this.handleInputClick.bind(this);
+		this.handleOutputClick = this.handleOutputClick.bind(this);
+		this.handleTextBoxChange = this.handleTextBoxChange.bind(this);
+		this.handleSliderValueChanged = this.handleSliderValueChanged.bind(this);
 	}
 
 	handleInputClick(file) {
@@ -171,6 +173,11 @@ export default class App extends Component {
 		this.setState({pixels: event.target.value});
 	}
 
+	handleSliderValueChanged(event) {
+		console.log("slider value changed" + event.target.value.toString());
+		this.setState({pixels: event.target.value});
+	}
+
   	render() {
 		let text = "";
 		if (this.state.progress > 0 && this.state.progress < 98) {
@@ -210,8 +217,8 @@ export default class App extends Component {
 						</div>
 					</div>
 
-					<div className="inputTextBox">
-						<input type="text" name="pixels" placeholder="1" onChange={this.handleTextBoxChange}></input>
+					<div className="inputSlider">
+						<input type="range" name="pixels" placeholder="1" onChange={this.handleSliderValueChanged}></input>
 						<br />Inverse Weisman Number 
 					</div>
 				</div>
