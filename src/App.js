@@ -116,17 +116,17 @@ export default class App extends Component {
 
 	getOutputPixelWidthFromSlider() {
 		const slideVal = Math.max(this.state.sliderValue, 1);
-		//if (this.state.sliderValue === "100") {
-		//	return 1;
-		//}
+		if (this.state.sliderValue === "100") {
+			return 1;
+		}
 		return this.imageWidth * (1/slideVal);
 	}
 
 	getOutputPixelHeightFromSlider() {
 		const slideVal = Math.max(this.state.sliderValue, 1);
-		//if (this.state.sliderValue === "100") {
-		//	return 1;
-		//}
+		if (this.state.sliderValue === "100") {
+			return 1;
+		}
 		return this.imageHeight * (1/slideVal);
 	}
 
