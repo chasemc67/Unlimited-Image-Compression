@@ -15,14 +15,17 @@ export default class App extends Component {
 		this.state = {
 			outputSource: "#",
 			progress: 0,
-			pixels: 1
-		}
+			pixels: 1,
+			sliderValue: 50
+		};
 
 		this.handleInputClick = this.handleInputClick.bind(this);
 		this.handleOutputClick = this.handleOutputClick.bind(this);
 		this.handleTextBoxChange = this.handleTextBoxChange.bind(this);
 		this.handleSliderValueChanged = this.handleSliderValueChanged.bind(this);
-	}
+		this.getOutputPixelWidthFromSlider = this.getOutputPixelWidthFromSlider.bind(this);
+		this.getOutputPixelHeightFromSlider = this.getOutputPixelHeightFromSlider.bind(this);
+	}	
 
 	handleInputClick(file) {
 		// console.log("input clicked");
@@ -44,7 +47,11 @@ export default class App extends Component {
 			newCanvas.width = image.width;
 			newCanvas.height = image.height;
 			const newContext = newCanvas.getContext('2d');
-			this.getPixels(this.state.pixels, this.state.pixels, canvas.width, canvas.height);
+
+			const outPutImageWidth = this.getOutputPixelWidthFromSlider();
+			const outputImageHeight = this.getOutputPixelHeightFromSlider();
+			this.getPixels(outPutImageWidth, outputImageHeight, canvas.width, canvas.height);
+			// this.getPixels(this.state.pixels, this.state.pixels, canvas.width, canvas.height);
 			// this.finishedInitialImageLoad(); // Once this fires, this.imageData should hold the new imageData
 			newContext.putImageData(this.imageData, 0, 0);
 
@@ -64,6 +71,7 @@ export default class App extends Component {
 	}
 
 	postImageToServer(base64Image) {
+		return;
 		const payload = {
 			image: base64Image
 		};
@@ -104,6 +112,22 @@ export default class App extends Component {
 			}
 		}
 		// return new ImageData(Uint8ClampedArray.from(colorArray), numXBlocks, numYBlocks);
+	}
+
+	getOutputPixelWidthFromSlider() {
+		const slideVal = Math.max(this.state.sliderValue, 1);
+		//if (this.state.sliderValue === "100") {
+		//	return 1;
+		//}
+		return this.imageWidth * (1/slideVal);
+	}
+
+	getOutputPixelHeightFromSlider() {
+		const slideVal = Math.max(this.state.sliderValue, 1);
+		//if (this.state.sliderValue === "100") {
+		//	return 1;
+		//}
+		return this.imageHeight * (1/slideVal);
 	}
 
 	getPixelFromImage(x, y, imageData){
@@ -175,7 +199,7 @@ export default class App extends Component {
 
 	handleSliderValueChanged(event) {
 		console.log("slider value changed" + event.target.value.toString());
-		this.setState({pixels: event.target.value});
+		this.setState({sliderValue: event.target.value});
 	}
 
   	render() {
