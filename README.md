@@ -14,8 +14,9 @@ Developed at the "Stupid Ideas and Shitty Products that Nobody Needs" Hackathon 
 
 
 #### Usage
+```
 npm install  
 npm start  
-
+```
 
 Code by Chase McCarty, Kyle Carlstrom, and Tian Wang
