@@ -10,7 +10,7 @@ alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 
 
 
-Developed at the "Stupid Ideas and Shitty Products that Nobody Needs" Hackathon at Startup Edmonton in 2016,  
+Developed at the "Stupid Ideas and Shitty Products that Nobody Needs" Hackathon at Startup Edmonton in 2016.  
 
 
 #### Usage
